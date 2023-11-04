@@ -1,0 +1,37 @@
+version: "3.4"
+
+services:
+  wdww:
+    build:
+      context: docker/ApachePhp # Assuming you have a Dockerfile in the "ApachePhp" directory
+    container_name: wdww
+    volumes:
+      - ./public:/var/www/html
+    ports:
+      - "80:80"
+    links:
+      - wdww_db:db
+    environment:
+      APACHE_RUN_USER: "#1000"
+      APACHE_RUN_GROUP: "#1000"
+    networks:
+      - wdww
+
+  wdww_db:
+    build:
+      context: docker/MySql # Assuming you have a Dockerfile in the "MySql" directory
+    container_name: wdww_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./wdww_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wdww
+      MYSQL_DATABASE: wdww
+      MYSQL_USER: wdww
+      MYSQL_PASSWORD: wdww
+    networks:
+      - wdww
+
+networks:
+  wdww:
